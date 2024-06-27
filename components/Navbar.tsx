@@ -6,7 +6,6 @@ import styles from './Navbar.module.css'
 
 export default function Navbar() {
   const pathname = usePathname();
-  console.log(pathname)
 
   function isActive(linkPathname: string) {
     return pathname === linkPathname;
