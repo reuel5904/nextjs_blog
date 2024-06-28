@@ -1,35 +1,26 @@
-"use client";
-
 import Link from 'next/link'
 import styles from './SignUp.module.css'
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import prisma from '@/lib/prisma';
 
 export default function SignupPage() {
-  const router = useRouter()
 
-  async function submitData(event: React.SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function submitAction(formData: FormData) {
+    'use server';
 
-    const formData = new FormData(event.currentTarget)
     const name = String(formData.get('name'))
     const email = String(formData.get('email'))
     const data = { name, email }
 
     if (name && email) {
-      await fetch('http://localhost:3000/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-      router.push('/')
+      await prisma.user.create({ data })
+      redirect('/')
     }
   }
 
   return (
     <div className={styles.page}>
-      <form onSubmit={submitData}>
+      <form action={submitAction}>
         <h1>Sign Up</h1>
         <input name="name" placeholder="Name" type="text" required />
         <input name="email" placeholder="Email address" type="email" required />
